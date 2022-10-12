@@ -6,11 +6,9 @@ This component provide flexible size-change animation for html element under `re
 
 ## Core content
 
-AnimatedSize provide the features such as element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and any size factor.
+AnimatedSize provide the features that let element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and size.
 
-<video name="Demo" autoplay loop controls muted>
-  <source src="./mov/preview.mov">
-</video>
+<img src="./document/preview.gif" alt="preview" width="200"/>
 
 ## Size [Factor](./src//animated-length.tsx)
 
