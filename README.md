@@ -8,6 +8,10 @@ This component provide flexible size-change animation for html element under `re
 
 AnimatedSize provide the features such as element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and any size factor.
 
+<video name="Demo" autoplay loop controls muted>
+  <source src="./mov/preview.mov">
+</video>
+
 ## Size [Factor](./src//animated-length.tsx)
 
 For example:
@@ -15,7 +19,7 @@ Element's `width` is `150px`.
 
 ```jsx
 <AnimatedSize widthFactor={/* set your factor */}>
-  {/* the entirely width (wrapper by span) is 150px */}
+  {/* if the entirely auto width (wrapper by span) is 150px */}
   <Element0 />
   <Element1 />
 </AnimatedSize>
@@ -23,7 +27,7 @@ Element's `width` is `150px`.
 
 This width property of inline style sheet:
 
-| Type           | property            | code                   |
+| Type           | Property            | Code                   |
 | -------------- | ------------------- | ---------------------- |
 | number[2]      | 300px (150 \* 2 px) | `widthFactor={2}`      |
 | string['50px'] | 50px                | `widthFactor={'50px'}` |
@@ -32,7 +36,7 @@ This width property of inline style sheet:
 
 Change behaviors:
 
-| From           | To             | description                                                                                                           |
+| From           | To             | Description                                                                                                           |
 | -------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
 | number[2]      | auto           | animate from 300px to 150px, than set the width property as 'auto'                                                    |
 | number[2]      | null           | animate from 300px to 150px, than set the width property as undefined (remove width property from inline style sheet) |
@@ -57,6 +61,7 @@ Change behaviors:
 ```jsx
 <AnimatedSizeBuilder
   widthFactor={/* set your factor */}
+  heightFactor={/* set your factor */}
   builder={(ref) => (
     <div ref={ref}>{/* set your element that wrapper by div */}</div>
   )}
@@ -74,6 +79,7 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
 ```jsx
 <AnimatedSize
   widthFactor={/* set your factor */}
+  heightFactor={/* set your factor */}
   axisDirection="column"
   mainAxisPosition="start"
   crossAxisPosition="end">
@@ -84,10 +90,12 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
 
 <AnimatedSize
   widthFactor={/* set your factor */}
+  heightFactor={/* set your factor */}
   style={{
     display:'block',
     position:'relative',
     top: '50px',
+    /* Don't override width or height or transition if you want animation to work properly */
     }}>
   {/* your element */}
 </AnimatedSize>
