@@ -12,6 +12,14 @@ AnimatedSize provide the features that let element's width/height animate betwee
 
 <img src="./document/preview.gif" alt="preview" width="200"/>
 
+- nested `AnimatedSize` is also fine.
+
+<br/>
+
+<img src="./document/performance.png" alt="performance" width="300"/>
+
+- most of the job is html renderer paint, more animation with less js-runtime.
+
 <br/>
 
 ## Install
@@ -28,8 +36,7 @@ import { AnimatedSize } from "animated-size";
 
 ## Size [Factor](./src//animated-length.tsx)
 
-For example:
-Element's `width` is `150px`.
+For example: element's `width` is `150px`.
 
 ```jsx
 <AnimatedSize widthFactor={/* set your factor */}>
@@ -117,7 +124,7 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
 ```console
 git clone https://github.com/JohnGu9/AnimatedSize.git
 cd AnimatedSize
-npm init -y
+npm i
 npm run storybook
 ```
 
