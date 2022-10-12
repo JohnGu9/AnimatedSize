@@ -1,9 +1,8 @@
 import React from "react";
 
-export function useSizeObserver<T extends HTMLElement>(element: T | null | undefined) {
-  const [, setTicker] = React.useState(false);
+export function useSizeObserver<T extends HTMLElement>(element: T | null | undefined, notifyUpdate: () => unknown) {
   const [resizeObserver, current] = React.useMemo(() => {
-    return [new ResizeObserver(() => setTicker(value => !value)),
+    return [new ResizeObserver(notifyUpdate),
     { width: undefined as number | undefined, height: undefined as number | undefined }];
   }, []);
 
@@ -20,7 +19,7 @@ export function useSizeObserver<T extends HTMLElement>(element: T | null | undef
       resizeObserver.observe(element);
       if (current.width !== element.offsetWidth ||
         current.height !== element.offsetWidth) {
-        setTicker(value => !value);
+        notifyUpdate();
       }
       return () => resizeObserver.unobserve(element);
     }

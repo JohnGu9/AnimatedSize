@@ -40,11 +40,13 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
     style,
     ...props
   }, ref) {
+    const [, setTicker] = React.useState(false);
+    const notifyUpdate = React.useMemo(() => { return () => setTicker(value => !value) }, []);
     const [element, setElement] = React.useState<HTMLSpanElement | null>(null);
-    const { width: w, height: h } = useSizeObserver(element);
+    const { width: w, height: h } = useSizeObserver(element, notifyUpdate);
 
-    const width = useAnimatedLength(widthFactor, w, duration);
-    const height = useAnimatedLength(heightFactor, h, duration);
+    const width = useAnimatedLength(widthFactor, w, duration, notifyUpdate);
+    const height = useAnimatedLength(heightFactor, h, duration, notifyUpdate);
 
     return (
       <span ref={ref}
