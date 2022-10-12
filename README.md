@@ -6,14 +6,14 @@ This component provide flexible size-change animation for html element under `re
 
 ## Core content
 
-AnimatedSize provide the features in such as element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and any size factor.
+AnimatedSize provide the features such as element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and any size factor.
 
 ## Size [Factor](./src//animated-length.tsx)
 
 For example:
 Element's `width` is `150px`.
 
-```tsx
+```jsx
 <AnimatedSize widthFactor={/* set your factor */}>
   {/* the entirely width (wrapper by span) is 150px */}
   <Element0 />
@@ -51,6 +51,47 @@ Change behaviors:
 | null           | auto           | set the width property as auto                                                                                        |
 
 - `widthFactor={undefined}` behaviors and `widthFactor={null}` behaviors are the same
+
+## Custom wrapper
+
+```jsx
+<AnimatedSizeBuilder
+  widthFactor={/* set your factor */}
+  builder={(ref) => (
+    <div ref={ref}>{/* set your element that wrapper by div */}</div>
+  )}
+/>
+```
+
+## Inner element position
+
+AnimatedSize use flex layout and the inner element follow the flex.
+<br/>
+By default parament, AnimatedSize will center the inner element.
+<br/>
+Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` to custom your element position. Or directly set inline style sheet -- `style` parament.
+
+```jsx
+<AnimatedSize
+  widthFactor={/* set your factor */}
+  axisDirection="column"
+  mainAxisPosition="start"
+  crossAxisPosition="end">
+  {/* your element */}
+</AnimatedSize>
+
+...
+
+<AnimatedSize
+  widthFactor={/* set your factor */}
+  style={{
+    display:'block',
+    position:'relative',
+    top: '50px',
+    }}>
+  {/* your element */}
+</AnimatedSize>
+```
 
 ## Demo
 

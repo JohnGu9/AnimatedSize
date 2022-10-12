@@ -4,7 +4,6 @@ export type Factor = number | string |
   'auto' | /** animate to Factor=1 and change the length property to 'auto'. For example: width: 'auto' */
   null;    /** animate to Factor=1 and remove the length property from inline style sheet. For example: width: undefined */
 
-
 export function useAnimatedLength(factor: Factor, offsetLength: number | undefined, duration: number) {
   const [auto, setAuto] = React.useState(factor === 'auto');
   const expectLength = (() => {
@@ -19,7 +18,7 @@ export function useAnimatedLength(factor: Factor, offsetLength: number | undefin
 
   const length = (() => {
     if (factor !== 'auto' && factor !== null) {
-      if (auto) return offsetLength; // from 'auto' | null to number
+      if (auto) return offsetLength; // from 'auto' | null to other
       if (typeof factor === 'string') return factor;
       if (offsetLength !== undefined) return offsetLength * factor;
       if (factor === 0) return 0;
