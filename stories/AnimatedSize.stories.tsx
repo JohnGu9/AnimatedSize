@@ -4,9 +4,6 @@ import { AnimatedSize } from '../src/index';
 
 export default {
   component: AnimatedSize,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof AnimatedSize>;
 
 const Template0: ComponentStory<typeof AnimatedSize> = (args) => {
@@ -66,4 +63,23 @@ const Template2: ComponentStory<typeof AnimatedSize> = (args) => {
   )
 };
 
-export const AnimationWithFactor = Template2.bind({});
+export const AnimationWithFactorNumber = Template2.bind({});
+
+const Template3: ComponentStory<typeof AnimatedSize> = (args) => {
+  const [open0, setOpen0] = React.useState(true);
+  const [open1, setOpen1] = React.useState(true);
+  return (
+    <>
+      <button style={{ marginBottom: 16, display: 'block' }} onClick={() => setOpen0(!open0)}>{open0 ? 'close' : 'open'} outer</button>
+      <button style={{ marginBottom: 16, display: 'block' }} onClick={() => setOpen1(!open1)}>{open1 ? 'close' : 'open'} inner</button>
+      <AnimatedSize style={{ border: 'dotted' }} heightFactor={open0 ? null : '10px'} {...args}>
+        <div style={{ margin: 64 }}></div>
+        <AnimatedSize style={{ border: 'dotted', margin: 64 }} heightFactor={open1 ? null : '10px'} {...args}>
+          <div style={{ margin: 64 }}></div>
+        </AnimatedSize>
+      </AnimatedSize>
+    </>
+  )
+};
+
+export const AnimationWithFactorString = Template3.bind({});

@@ -1,25 +1,30 @@
 import React from "react";
 
-export type Factor = number |
+export type Factor = number | string |
   'auto' | /** animate to Factor=1 and change the length property to 'auto'. For example: width: 'auto' */
   null;    /** animate to Factor=1 and remove the length property from inline style sheet. For example: width: undefined */
 
 
 export function useAnimatedLength(factor: Factor, offsetLength: number | undefined, duration: number) {
   const [auto, setAuto] = React.useState(factor === 'auto');
-  const expectLength =
-    (factor === 'auto' || factor === null || offsetLength === undefined)
-      ? offsetLength
-      : factor * offsetLength;
+  const expectLength = (() => {
+    if (factor === 'auto' || factor === null) return offsetLength;
+    if (typeof factor === 'string') return factor;
+    if (offsetLength !== undefined) return factor * offsetLength;
+    if (factor === 0) return 0;
+    // [[unlikely]]
+    return undefined;
+  })();
   const animating = useAnimatingOnChange(expectLength, duration);
 
   const length = (() => {
     if (factor !== 'auto' && factor !== null) {
       if (auto) return offsetLength; // from 'auto' | null to number
-      return factor === 0 ? 0 :
-        (offsetLength !== undefined
-          ? offsetLength * factor
-          : undefined /* this situation unlikely happen */);
+      if (typeof factor === 'string') return factor;
+      if (offsetLength !== undefined) return offsetLength * factor;
+      if (factor === 0) return 0;
+      // [[unlikely]]
+      return undefined;
     } else {
       /* factor === 'auto' | factor === null */
       if (auto) {
@@ -44,9 +49,9 @@ export function useAnimatedLength(factor: Factor, offsetLength: number | undefin
 }
 
 function useAnimatingOnChange(current: unknown, duration: number) {
-  const [ticker, setTicker] = React.useState(false);
+  const [, setTicker] = React.useState(false);
   const state = React.useMemo(() => {
-    return { current, animating: undefined as number | undefined, duration };
+    return { current, duration, animating: undefined as number | undefined };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -61,7 +66,7 @@ function useAnimatingOnChange(current: unknown, duration: number) {
     } else {
       state.animating = window.setTimeout(() => {
         state.animating = undefined;
-        setTicker(!ticker);
+        setTicker(value => !value);
       }, duration);
     }
   }
