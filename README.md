@@ -34,6 +34,15 @@ npm i animated-size
 import { AnimatedSize } from "animated-size";
 ```
 
+## Use
+
+```jsx
+const [open, setOpen] = React.useState(true);
+<AnimatedSize widthFactor={open ? { size: "auto" } : { size: 0 }}>
+  {/* your element*/}
+</AnimatedSize>;
+```
+
 ## Size [Factor](./src//animated-length.tsx)
 
 ```jsx
