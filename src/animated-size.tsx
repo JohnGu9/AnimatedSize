@@ -1,15 +1,12 @@
-import { DataType, Property } from "csstype";
+import { Property } from "csstype";
 import React from "react";
-import { Factor, useAnimatedLength } from "./animated-length";
+import { useRefComposer } from "react-ref-composer";
 import { createComponent } from "./create-component";
-import { useSizeObserver } from "./size-observer";
+import { Factor, useAnimatedSize } from "./hook";
 
 export type AnimatedSizeProps = {
   widthFactor?: Factor,
   heightFactor?: Factor,
-  duration?: number, /* ms */
-  delay?: number, /* ms */
-  curve?: DataType.EasingFunction,
   axisDirection?: Property.FlexDirection,
   mainAxisPosition?: Property.JustifyContent,
   crossAxisPosition?: Property.AlignItems,
@@ -28,37 +25,30 @@ export type AnimatedSizeBuilderProps = AnimatedSizeProps & {
 
 export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSizeBuilderProps>(
   function AnimatedSizeBuilder({
-    widthFactor = null,
-    heightFactor = null,
-    duration = 350,
-    delay = 0,
-    curve = 'ease',
-    axisDirection = 'row',
+    widthFactor = {},
+    heightFactor = {},
+    axisDirection,
     mainAxisPosition = 'center',
     crossAxisPosition = 'center',
     builder,
     style,
     ...props
   }, ref) {
-    const [, setTicker] = React.useState(false);
-    const notifyUpdate = React.useMemo(() => { return () => setTicker(value => !value) }, []);
+    const composeRefs = useRefComposer();
+    const innerRef = React.useRef<HTMLElement>(null);
     const [element, setElement] = React.useState<HTMLSpanElement | null>(null);
-    const { width: w, height: h } = useSizeObserver(element, notifyUpdate);
-
-    const width = useAnimatedLength(widthFactor, w, duration, notifyUpdate);
-    const height = useAnimatedLength(heightFactor, h, duration, notifyUpdate);
-
+    const { width, height, transition } = useAnimatedSize(element, innerRef, widthFactor, heightFactor, style ?? {});
     return (
-      <span ref={ref}
+      <span ref={composeRefs(innerRef, ref)}
         style={{
           overflow: 'hidden',
           display: 'inline-flex',
-          transition: `width ${duration}ms ${curve} ${delay}ms, height ${duration}ms ${curve} ${delay}ms`,
           flexDirection: axisDirection,
           justifyContent: mainAxisPosition,
           alignItems: crossAxisPosition,
           width,
           height,
+          transition,
           ...style,
         }}
         {...props}>
