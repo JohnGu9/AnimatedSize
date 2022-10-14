@@ -45,13 +45,15 @@ const [open, setOpen] = React.useState(true);
 
 ## Size [Factor](./src//animated-length.tsx)
 
-```jsx
+```ts
 export type Factor = {
-  size?: SizeFactor /* default: undefined */,
-  duration?: number /* unit: ms, default: 350 */,
-  delay?: number /* unit: ms, default: 0 */,
-  curve?: DataType.EasingFunction /* default: ease */,
+  size?: SizeFactor /* default: undefined */;
+  duration?: number /* unit: ms, default: 350 */;
+  delay?: number /* unit: ms, default: 0 */;
+  curve?: DataType.EasingFunction /* default: ease */;
 };
+
+export type SizeFactor = number | string | "auto" | undefined;
 ```
 
 | SizeFactor | Requirement                                 |
@@ -100,6 +102,8 @@ Factor change behaviors:
 | auto           | undefined      | set the width property as undefined (remove width property from inline style sheet)                                   |
 | undefined      | auto           | set the width property as auto                                                                                        |
 
+- use `auto` or `undefined` for better performance when nested element may change its size.
+
 ## Custom animation curve
 
 AnimatedSize implement the animation that underlay is [css transition](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions). Setup factor other properties to custom your animation `curve` as well as `duration` and `delay`
@@ -145,7 +149,9 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
   crossAxisPosition="end">
   {/* your element */}
 </AnimatedSize>
+```
 
+```jsx
 <AnimatedSize
   widthFactor={/* set your factor */}
   heightFactor={/* set your factor */}
