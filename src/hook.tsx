@@ -6,10 +6,10 @@ export type SizeFactor = number | string |
   undefined; /** animate to Factor=1 and remove the length property from inline style sheet. For example: width: undefined */
 
 export type Factor = {
-  size?: SizeFactor,               /* default: undefined */
-  duration?: number,               /* unit: ms, default: 350 */
-  delay?: number,                  /* unit: ms, default: 0 */
-  curve?: DataType.EasingFunction, /* default: ease */
+  size?: SizeFactor,              /* default: undefined */
+  duration: number,               /* unit: ms, default: 350 */
+  delay: number,                  /* unit: ms, default: 0 */
+  curve: DataType.EasingFunction, /* default: ease */
 }
 
 export type Style = {
@@ -18,19 +18,10 @@ export type Style = {
   transition?: string,
 };
 
-type InnerFactor = {
-  size?: SizeFactor,
-  duration: number,
-  delay: number,
-  curve: DataType.EasingFunction,
-};
-
 export function useAnimatedSize<T extends HTMLElement>(
   element: T | null, target: React.RefObject<T>,
   widthFactor: Factor, heightFactor: Factor,
   outerStyle: Style) {
-  defaultFactor(widthFactor);
-  defaultFactor(heightFactor);
   const isWidthAuto = isFactorAuto(widthFactor.size);
   const isHeightAuto = isFactorAuto(heightFactor.size)
   const [, setTicker] = React.useState(false);
@@ -39,8 +30,8 @@ export function useAnimatedSize<T extends HTMLElement>(
     return {
       widthAuto: isWidthAuto,
       heightAuto: isHeightAuto,
-      widthFactor: {} as InnerFactor,
-      heightFactor: {} as InnerFactor,
+      widthFactor: {} as Factor,
+      heightFactor: {} as Factor,
       widthAnimation: undefined as unknown as ReturnType<typeof useAnimatingOnChange>,
       heightAnimation: undefined as unknown as ReturnType<typeof useAnimatingOnChange>,
       innerStyle: {} as Style,
@@ -49,13 +40,16 @@ export function useAnimatedSize<T extends HTMLElement>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   state.outerStyle = outerStyle;
-  state.widthFactor = widthFactor as InnerFactor;
-  state.heightFactor = heightFactor as InnerFactor;
-  state.widthAnimation = useAnimatingOnChange(widthFactor as InnerFactor, notifyUpdate);
-  state.heightAnimation = useAnimatingOnChange(heightFactor as InnerFactor, notifyUpdate);
-  state.innerStyle.width = 'width' in outerStyle ? outerStyle.width : expectLength(widthFactor.size, element?.offsetWidth, state.widthAuto);
-  state.innerStyle.height = 'height' in outerStyle ? outerStyle.height : expectLength(heightFactor.size, element?.offsetHeight, state.heightAuto);
-  state.innerStyle.transition = 'transition' in outerStyle ? outerStyle.transition : toTransitionString(state.widthAnimation.transition, state.heightAnimation.transition);
+  state.widthFactor = widthFactor;
+  state.heightFactor = heightFactor;
+  state.widthAnimation = useAnimatingOnChange(widthFactor, notifyUpdate);
+  state.heightAnimation = useAnimatingOnChange(heightFactor, notifyUpdate);
+  state.innerStyle.width = 'width' in outerStyle ? outerStyle.width
+    : expectLength(widthFactor.size, element?.offsetWidth, state.widthAuto);
+  state.innerStyle.height = 'height' in outerStyle ? outerStyle.height
+    : expectLength(heightFactor.size, element?.offsetHeight, state.heightAuto);
+  state.innerStyle.transition = 'transition' in outerStyle ? outerStyle.transition
+    : toTransitionString(state.widthAnimation.transition, state.heightAnimation.transition);
 
   React.useEffect(() => {
     if (isWidthAuto) {
@@ -133,15 +127,8 @@ function isFactorAuto(factor: SizeFactor) {
   return factor === 'auto' || factor === undefined;
 }
 
-function defaultFactor(factor: Factor): InnerFactor {
-  factor.size ??= undefined;
-  factor.duration ??= 350;
-  factor.curve ??= 'ease';
-  factor.delay ??= 0;
-  return factor as InnerFactor;
-}
 
-function isFactorNotEqual(prev: InnerFactor, current: InnerFactor) {
+function isFactorNotEqual(prev: Factor, current: Factor) {
   return prev.size !== current.size
     || prev.duration !== current.duration
     || prev.curve !== current.curve
@@ -149,7 +136,7 @@ function isFactorNotEqual(prev: InnerFactor, current: InnerFactor) {
 }
 
 const { clearTimeout, setTimeout } = window;
-function useAnimatingOnChange(current: InnerFactor, notifyUpdate: () => unknown) {
+function useAnimatingOnChange(current: Factor, notifyUpdate: () => unknown) {
   const state = React.useMemo(() => {
     return { prev: current, animating: undefined as number | undefined, startTime: undefined as number | undefined, transition: undefined as string | undefined };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,7 +169,7 @@ function useAnimatingOnChange(current: InnerFactor, notifyUpdate: () => unknown)
   return state;
 }
 
-function updateAnimation(animation: ReturnType<typeof useAnimatingOnChange>, current: InnerFactor) {
+function updateAnimation(animation: ReturnType<typeof useAnimatingOnChange>, current: Factor) {
   if (animation.startTime === undefined) return false;
   const pass = Date.now() - animation.startTime;
   const delay = Math.max(0, current.delay - pass);

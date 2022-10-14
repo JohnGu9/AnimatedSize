@@ -109,17 +109,16 @@ Factor change behaviors:
 AnimatedSize implement the animation that underlay is [css transition](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions). Setup factor other properties to custom your animation `curve` as well as `duration` and `delay`
 
 ```jsx
-<AnimatedSizeBuilder
+<AnimatedSize
   widthFactor={{
     size: "auto",
     curve: "ease-in",
     duration: 200 /* unit: ms */,
     delay: 200 /* unit: ms */,
   }}
-  builder={(ref) => (
-    <div ref={ref}>{/* set your element that wrapper by div */}</div>
-  )}
-/>
+>
+  {/* your element*/}
+</AnimatedSize>
 ```
 
 ## Custom wrapper
