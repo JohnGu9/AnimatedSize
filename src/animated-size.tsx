@@ -41,16 +41,12 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
     style,
     ...props
   }, ref) {
-    widthFactor.duration ??= duration;
-    widthFactor.delay ??= delay;
-    widthFactor.curve ??= curve;
-    heightFactor.duration ??= duration;
-    heightFactor.delay ??= delay;
-    heightFactor.curve ??= curve;
     const composeRefs = useRefComposer();
     const innerRef = React.useRef<HTMLElement>(null);
     const [element, setElement] = React.useState<HTMLSpanElement | null>(null);
-    const { width, height, transition } = useAnimatedSize(element, innerRef, widthFactor as Factor, heightFactor as Factor, style ?? {});
+    const { width, height, transition } = useAnimatedSize(element, innerRef,
+      mergeFactor(widthFactor, duration, delay, curve),
+      mergeFactor(heightFactor, duration, delay, curve), style ?? {});
     return (
       <span ref={composeRefs(innerRef, ref)}
         style={{
@@ -70,3 +66,12 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
     );
   }
 );
+
+function mergeFactor(factor: PartialFactor, duration: number, delay: number, curve: DataType.EasingFunction): Factor {
+  return {
+    size: factor.size,
+    duration: factor.duration ?? duration,
+    delay: factor.delay ?? delay,
+    curve: factor.curve ?? curve,
+  };
+}

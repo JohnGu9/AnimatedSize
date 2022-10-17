@@ -7,7 +7,7 @@ export default {
   component: AnimatedSize,
 } as ComponentMeta<typeof AnimatedSize>;
 
-function AnimationBetween(start: Factor, end: Factor) {
+function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
   return ((args) => {
     const [open0, setOpen0] = React.useState(true);
     const [open1, setOpen1] = React.useState(true);
