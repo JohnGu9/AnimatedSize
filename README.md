@@ -4,7 +4,7 @@
 
 This component provide flexible size-change animation for html element under `react-dom` framework.
 
-## Core content
+## Feature
 
 AnimatedSize provide the features that let element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and size. Animation is provided by css `transition` so the component take less js-runtime compared with pure js implement. And AnimatedSize support perfect animation that you can stop animation or change animation dest or change animation duration at any time even AnimatedSize is animating or nested element size change.
 
@@ -38,12 +38,13 @@ import { AnimatedSize } from "animated-size";
 
 ```jsx
 const [open, setOpen] = React.useState(true);
+...
 <AnimatedSize widthFactor={open ? { size: "auto" } : { size: 0 }}>
   {/* your element*/}
 </AnimatedSize>;
 ```
 
-## Size [Factor](./src//animated-length.tsx)
+## Size [Factor](./src//hook.tsx)
 
 ```ts
 export type Factor = {
@@ -67,7 +68,7 @@ For example: element's `width` is `150px`.
 
 ```jsx
 <AnimatedSize widthFactor={/* set your factor */}>
-  {/* if the entirely auto width (wrapper by span) is 150px */}
+  {/* if the entirely width (wrapper by span) is 150px */}
   <Element0 />
   <Element1 />
 </AnimatedSize>
@@ -91,10 +92,10 @@ Factor change behaviors:
 | string['50px'] | auto           | animate from 50px to 150px, than set the width property as 'auto'                                                     |
 | string['50px'] | undefined      | animate from 50px to 150px, than set the width property as undefined (remove width property from inline style sheet)  |
 |                |                |                                                                                                                       |
-| auto           | number[2]      | set 150px, than animate from 150px to 300px                                                                           |
-| undefined      | number[2]      | set 150px, than animate from 150px to 300px                                                                           |
-| auto           | string['50px'] | set 150px, than animate from 150px to 50px                                                                            |
-| undefined      | string['50px'] | set 150px, than animate from 150px to 50px                                                                            |
+| auto           | number[2]      | set the width property as 150px, than animate from 150px to 300px                                                     |
+| undefined      | number[2]      | set the width property as 150px, than animate from 150px to 300px                                                     |
+| auto           | string['50px'] | set the width property as 150px, than animate from 150px to 50px                                                      |
+| undefined      | string['50px'] | set the width property as 150px, than animate from 150px to 50px                                                      |
 |                |                |                                                                                                                       |
 | number[2]      | string['50px'] | animate from 300px to 50px                                                                                            |
 | string['50px'] | number[2]      | animate from 50px to 300px                                                                                            |
@@ -106,7 +107,8 @@ Factor change behaviors:
 
 ## Custom animation curve
 
-AnimatedSize implement the animation that underlay is [css transition](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions). Setup factor other properties to custom your animation `curve` as well as `duration` and `delay`
+AnimatedSize implement the animation that underlay is [css transition](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions).
+Setup factor other properties to custom your animation `curve` as well as `duration` and `delay`.
 
 ```jsx
 <AnimatedSize
@@ -128,10 +130,14 @@ AnimatedSize implement the animation that underlay is [css transition](https://d
   widthFactor={/* set your factor */}
   heightFactor={/* set your factor */}
   builder={(ref) => (
-    <div ref={ref}>{/* set your element that wrapper by div */}</div>
+    <div ref={ref}>{/* pass ref to dom element that let AnimatedSize access the element object */}
+    {/* set your element that wrapper by div */}
+    </div>
   )}
 />
 ```
+
+- AnimatedSize require wrapper dom element ref for calculation of this total size
 
 ## Inner element position
 
@@ -150,6 +156,10 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
 </AnimatedSize>
 ```
 
+- `axisDirection` - CSSProperties.`flexDirection`
+- `mainAxisPosition` - CSSProperties.`justifyContent`
+- `crossAxisPosition` - CSSProperties.`alignItems`
+
 ```jsx
 <AnimatedSize
   widthFactor={/* set your factor */}
@@ -162,6 +172,8 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
   {/* your element */}
 </AnimatedSize>
 ```
+
+- `style`
 
 ## Interactive Demo
 

@@ -12,7 +12,7 @@ export type Factor = {
   curve: DataType.EasingFunction, /* default: ease */
 }
 
-export type Style = {
+type Style = {
   width?: number | string,
   height?: number | string,
   transition?: string,
@@ -30,86 +30,80 @@ export function useAnimatedSize<T extends HTMLElement>(
     return {
       widthAuto: isWidthAuto,
       heightAuto: isHeightAuto,
-      widthFactor: {} as Factor,
-      heightFactor: {} as Factor,
+      outputStyle: {} as Style,
+      outerStyle: undefined as unknown as Style,
+      widthFactor: undefined as unknown as Factor,
+      heightFactor: undefined as unknown as Factor,
       widthAnimation: undefined as unknown as ReturnType<typeof useAnimatingOnChange>,
       heightAnimation: undefined as unknown as ReturnType<typeof useAnimatingOnChange>,
-      innerStyle: {} as Style,
-      outerStyle: {} as Style,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  state.outerStyle = outerStyle;
-  state.widthFactor = widthFactor;
-  state.heightFactor = heightFactor;
-  state.widthAnimation = useAnimatingOnChange(widthFactor, notifyUpdate);
-  state.heightAnimation = useAnimatingOnChange(heightFactor, notifyUpdate);
-  state.innerStyle.width = 'width' in outerStyle ? outerStyle.width
-    : expectLength(widthFactor.size, element?.offsetWidth, state.widthAuto);
-  state.innerStyle.height = 'height' in outerStyle ? outerStyle.height
-    : expectLength(heightFactor.size, element?.offsetHeight, state.heightAuto);
-  state.innerStyle.transition = 'transition' in outerStyle ? outerStyle.transition
-    : toTransitionString(state.widthAnimation.transition, state.heightAnimation.transition);
 
+  state.widthAnimation = useAnimatingOnChange(widthFactor, () => {
+    if (isWidthAuto) state.widthAuto = true;
+    notifyUpdate();
+  });
   React.useEffect(() => {
-    if (isWidthAuto) {
-      if (state.widthAnimation.animating === undefined) {
-        state.widthAuto = true;
-        notifyUpdate();
-      }
-    } else {
+    if (!isWidthAuto && state.widthAuto !== false) {
       state.widthAuto = false;
       notifyUpdate();
     }
-  }, [isWidthAuto, state.widthAnimation.animating, state]);
+  }, [isWidthAuto, state]);
 
+  state.heightAnimation = useAnimatingOnChange(heightFactor, () => {
+    if (isHeightAuto) state.heightAuto = true;
+    notifyUpdate();
+  });
   React.useEffect(() => {
-    if (isHeightAuto) {
-      if (state.heightAnimation.animating === undefined) {
-        state.heightAuto = true;
-        notifyUpdate();
-      }
-    } else {
+    if (!isHeightAuto && state.heightAuto !== false) {
       state.heightAuto = false;
       notifyUpdate();
     }
-  }, [isHeightAuto, state.heightAnimation.animating, state]);
+  }, [isHeightAuto, state]);
+
+  state.widthFactor = widthFactor;
+  state.heightFactor = heightFactor;
+  state.outerStyle = outerStyle;
+  state.outputStyle.width = 'width' in outerStyle ? outerStyle.width
+    : expectLength(widthFactor.size, element?.offsetWidth, state.widthAuto);
+  state.outputStyle.height = 'height' in outerStyle ? outerStyle.height
+    : expectLength(heightFactor.size, element?.offsetHeight, state.heightAuto);
+  state.outputStyle.transition = 'transition' in outerStyle ? outerStyle.transition
+    : toTransitionString(state.widthAnimation.transition, state.heightAnimation.transition);
 
   React.useEffect(() => {
     if (element) {
       const current = target.current!;
       const update = () => {
-        const { innerStyle, outerStyle,
+        const { outputStyle, outerStyle,
           widthFactor, heightFactor,
           widthAuto, heightAuto,
           widthAnimation, heightAnimation } = state;
-
         let requestUpdateTransition = false;
 
-        if (!('width' in outerStyle)) {
-          const width = expectLength(widthFactor.size, element.offsetWidth, widthAuto);
-          if (width !== innerStyle.width) {
-            innerStyle.width = width;
-            if (width !== undefined) current.style.width = toCssString(width);
-            else current.style.removeProperty('width');
-            if (updateAnimation(widthAnimation, widthFactor))
-              requestUpdateTransition = true;
-          }
+        const width = 'width' in outerStyle ? outerStyle.width
+          : expectLength(widthFactor.size, element.offsetWidth, widthAuto);
+        if (outputStyle.width !== width) {
+          outputStyle.width = width;
+          if (width !== undefined) current.style.width = toCssString(width);
+          else current.style.removeProperty('width');
+          if (updateAnimation(widthAnimation, widthFactor))
+            requestUpdateTransition = true;
         }
 
-        if (!('height' in outerStyle)) {
-          const height = expectLength(heightFactor.size, element.offsetHeight, heightAuto);
-          if (height !== innerStyle.height) {
-            innerStyle.height = height;
-            if (height !== undefined) current.style.height = toCssString(height);
-            else current.style.removeProperty('height');
-            if (updateAnimation(heightAnimation, heightFactor))
-              requestUpdateTransition = true;
-          }
+        const height = 'height' in outerStyle ? outerStyle.height
+          : expectLength(heightFactor.size, element.offsetHeight, heightAuto);
+        if (outputStyle.height !== height) {
+          outputStyle.height = height;
+          if (height !== undefined) current.style.height = toCssString(height);
+          else current.style.removeProperty('height');
+          if (updateAnimation(heightAnimation, heightFactor))
+            requestUpdateTransition = true;
         }
 
         if (!('transition' in outerStyle) && requestUpdateTransition) {
-          current.style.transition = innerStyle.transition =
+          current.style.transition = outputStyle.transition =
             toTransitionString(widthAnimation.transition, heightAnimation.transition);
         }
       };
@@ -120,13 +114,12 @@ export function useAnimatedSize<T extends HTMLElement>(
     }
   }, [element, state, target]);
 
-  return state.innerStyle;
+  return state.outputStyle;
 }
 
 function isFactorAuto(factor: SizeFactor) {
   return factor === 'auto' || factor === undefined;
 }
-
 
 function isFactorNotEqual(prev: Factor, current: Factor) {
   return prev.size !== current.size
@@ -136,7 +129,7 @@ function isFactorNotEqual(prev: Factor, current: Factor) {
 }
 
 const { clearTimeout, setTimeout } = window;
-function useAnimatingOnChange(current: Factor, notifyUpdate: () => unknown) {
+function useAnimatingOnChange(current: Factor, onAnimationEnd: () => unknown) {
   const state = React.useMemo(() => {
     return { prev: current, animating: undefined as number | undefined, startTime: undefined as number | undefined, transition: undefined as string | undefined };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -156,7 +149,7 @@ function useAnimatingOnChange(current: Factor, notifyUpdate: () => unknown) {
         state.startTime = undefined;
         state.transition = undefined;
         state.animating = undefined;
-        notifyUpdate();
+        onAnimationEnd();
       }, duration);
     }
     state.prev = current;
