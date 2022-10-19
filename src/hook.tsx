@@ -1,9 +1,7 @@
 import { DataType } from "csstype";
 import React from "react";
 
-export type SizeFactor = number | string |
-  'auto' |   /** animate to Factor=1 and change the length property to 'auto'. For example: width: 'auto' */
-  undefined; /** animate to Factor=1 and remove the length property from inline style sheet. For example: width: undefined */
+export type SizeFactor = number | string | 'auto' | undefined;
 
 export type Factor = {
   size?: SizeFactor,              /* default: undefined */

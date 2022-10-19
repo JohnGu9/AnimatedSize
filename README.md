@@ -6,7 +6,9 @@ This component provide flexible size-change animation for html element under `re
 
 ## Feature
 
-AnimatedSize provide the features that let element's width/height animate between [auto](https://developer.mozilla.org/en-US/docs/Web/CSS/width) and size. Animation is provided by css `transition` so the component take less js-runtime compared with pure js implement. And AnimatedSize support perfect animation that you can stop animation or change animation dest or change animation duration at any time even AnimatedSize is animating or nested element size change.
+1. AnimatedSize provide the features that let element's width/height animate between `auto` and any size.
+2. Animation is provided by `css transition` so the component take less js-runtime compared with pure js implement.
+3. And AnimatedSize support perfect animation that you can stop animation or change animation dest or change animation duration `at any time` even AnimatedSize is animating or nested element size change.
 
 <br/>
 
@@ -76,12 +78,12 @@ For example: element's `width` is `150px`.
 
 This width property of inline style sheet:
 
-| Type           | Property            | Code                                |
-| -------------- | ------------------- | ----------------------------------- |
-| number[2]      | 300px (150 \* 2 px) | `widthFactor={{ size: 2 }}`         |
-| string['50px'] | 50px                | `widthFactor={{ size: '50px' }}`    |
-| auto           | auto                | `widthFactor={{ size: 'auto' }}`    |
-| undefined      | undefined           | `widthFactor={{ size: undefined }}` |
+| Type           | Property            | Code                                                                                    |
+| -------------- | ------------------- | --------------------------------------------------------------------------------------- |
+| number[2]      | 300px (150 \* 2 px) | `widthFactor={{ size: 2 }}`                                                             |
+| string['50px'] | 50px                | `widthFactor={{ size: '50px' }}`                                                        |
+| auto           | auto                | `widthFactor={{ size: 'auto' }}`                                                        |
+| undefined      | undefined           | `widthFactor={{ size: undefined }}` or `widthFactor={{ }}` or `widthFactor={undefined}` |
 
 Factor change behaviors:
 
@@ -108,7 +110,7 @@ Factor change behaviors:
 ## Custom animation curve
 
 AnimatedSize implement the animation that underlay is [css transition](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions).
-Setup factor other properties to custom your animation `curve` as well as `duration` and `delay`.
+Setup factor other properties to custom your animation `curve` as well as `duration` and `delay` just like [css transition](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions).
 
 ```jsx
 <AnimatedSize
@@ -137,13 +139,15 @@ Setup factor other properties to custom your animation `curve` as well as `durat
 />
 ```
 
-- AnimatedSize require wrapper dom element ref for calculation of this total size
+- AnimatedSize require wrapper dom element reference for calculation of this nested elements' total size
 
 ## Inner element position
 
-By default, AnimatedSize use `flex` layout (and `center` inner element) and the inner element follow the flex.
+By default, AnimatedSize use `inline-flex` layout (and `center` inner element) and the inner element follow the flex layout.
 <br/>
 Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` to custom your element position. Or directly set inline style sheet -- `style` parament.
+<br/>
+By the way, by default AnimatedSize set `overflow` as `hidden`. Set style to override it if necessary.
 
 ```jsx
 <AnimatedSize
@@ -165,6 +169,7 @@ Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` 
   widthFactor={/* set your factor */}
   heightFactor={/* set your factor */}
   style={{
+    overflow: 'visible',
     display:'block',
     position:'relative',
     /* Don't override width or height or transition if you want animation to work properly */
