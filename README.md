@@ -8,7 +8,7 @@ This component provide flexible size-change animation for html element under `re
 
 1. AnimatedSize provide the features that let element's width/height animate between `auto` and any size.
 2. Animation is provided by `css transition` so the component take less js-runtime compared with pure js implement.
-3. And AnimatedSize support perfect animation that you can stop animation or change animation dest or change animation duration `at any time` even AnimatedSize is animating or nested element size change.
+3. And AnimatedSize support perfect animation that you can stop animation or change animation dest or change animation duration `at any time` even AnimatedSize is animating or nested element's size is changing.
 
 <br/>
 
@@ -193,11 +193,13 @@ npm run storybook
 
 [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) support
 
-| Type    | Version |
-| ------- | ------- |
-| Chrome  | 64      |
-| Firefox | 69      |
-| Safari  | 13.1    |
+| Browser       | Version (or upper) |
+| ------------- | ------------------ |
+| Chrome        | 64                 |
+| Edge          | 79                 |
+| Firefox       | 69                 |
+| Safari        | 13.1               |
+| Safari on iOS | 13.4               |
 
 ## Component dependencies
 

@@ -34,6 +34,7 @@ export function useAnimatedSize<T extends HTMLElement>(
       heightFactor: undefined as unknown as Factor,
       widthAnimation: undefined as unknown as ReturnType<typeof useAnimatingOnChange>,
       heightAnimation: undefined as unknown as ReturnType<typeof useAnimatingOnChange>,
+      element: undefined as unknown as T | null,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -45,9 +46,14 @@ export function useAnimatedSize<T extends HTMLElement>(
   React.useEffect(() => {
     if (!isWidthAuto && state.widthAuto !== false) {
       state.widthAuto = false;
-      notifyUpdate();
+      const current = target.current!;
+      const { outputStyle, outerStyle, widthFactor, element } = state;
+      const width = outputStyle.width = 'width' in outerStyle ? outerStyle.width
+        : expectLength(widthFactor.size, element?.offsetWidth, false);
+      if (width !== undefined) current.style.width = toCssString(width);
+      else current.style.removeProperty('width');
     }
-  }, [isWidthAuto, state]);
+  }, [isWidthAuto, state, target]);
 
   state.heightAnimation = useAnimatingOnChange(heightFactor, () => {
     if (isHeightAuto) state.heightAuto = true;
@@ -56,10 +62,16 @@ export function useAnimatedSize<T extends HTMLElement>(
   React.useEffect(() => {
     if (!isHeightAuto && state.heightAuto !== false) {
       state.heightAuto = false;
-      notifyUpdate();
+      const current = target.current!;
+      const { outputStyle, outerStyle, heightFactor, element } = state;
+      const height = outputStyle.height = 'height' in outerStyle ? outerStyle.height
+        : expectLength(heightFactor.size, element?.offsetHeight, false);
+      if (height !== undefined) current.style.height = toCssString(height);
+      else current.style.removeProperty('height');
     }
   }, [isHeightAuto, state]);
 
+  state.element = element;
   state.widthFactor = widthFactor;
   state.heightFactor = heightFactor;
   state.outerStyle = outerStyle;
@@ -107,7 +119,7 @@ export function useAnimatedSize<T extends HTMLElement>(
       };
       const observer = new ResizeObserver(update);
       observer.observe(element);
-      update();
+      update(); // not sure whether it's necessary or not
       return () => observer.disconnect();
     }
   }, [element, state, target]);
