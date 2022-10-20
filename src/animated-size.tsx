@@ -45,7 +45,7 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
     const composeRefs = useRefComposer();
     const innerRef = React.useRef<HTMLElement>(null);
     const [element, setElement] = React.useState<HTMLSpanElement | null>(null);
-    const { width, height, transition } = useAnimatedSize(
+    const { width, height, transition, willChange } = useAnimatedSize(
       element, innerRef,
       mergeFactor(widthFactor, duration, delay, curve),
       mergeFactor(heightFactor, duration, delay, curve),
@@ -58,9 +58,7 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
           flexDirection: axisDirection,
           justifyContent: mainAxisPosition,
           alignItems: crossAxisPosition,
-          width,
-          height,
-          transition,
+          width, height, transition, willChange,
           ...style,
         }}
         {...props}>

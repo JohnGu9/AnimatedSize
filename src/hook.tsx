@@ -14,6 +14,7 @@ type Style = {
   width?: number | string,
   height?: number | string,
   transition?: string,
+  willChange?: string,
 };
 
 export function useAnimatedSize<T extends HTMLElement>(
@@ -75,12 +76,15 @@ export function useAnimatedSize<T extends HTMLElement>(
   state.widthFactor = widthFactor;
   state.heightFactor = heightFactor;
   state.outerStyle = outerStyle;
-  state.outputStyle.width = 'width' in outerStyle ? outerStyle.width
+  const { outputStyle } = state;
+  outputStyle.width = 'width' in outerStyle ? outerStyle.width
     : expectLength(widthFactor.size, element?.offsetWidth, state.widthAuto);
-  state.outputStyle.height = 'height' in outerStyle ? outerStyle.height
+  outputStyle.height = 'height' in outerStyle ? outerStyle.height
     : expectLength(heightFactor.size, element?.offsetHeight, state.heightAuto);
-  state.outputStyle.transition = 'transition' in outerStyle ? outerStyle.transition
+  outputStyle.transition = 'transition' in outerStyle ? outerStyle.transition
     : toTransitionString(state.widthAnimation.transition, state.heightAnimation.transition);
+  outputStyle.willChange = 'willChange' in outerStyle ? outerStyle.willChange
+    : toWillChange(element, state.widthAnimation.transition !== undefined, state.heightAnimation.transition !== undefined);
 
   React.useEffect(() => {
     if (element) {
@@ -207,7 +211,21 @@ function toTransitionString(width?: string, height?: string) {
   }
 }
 
+function toWillChange(element: HTMLElement | null, width?: boolean, height?: boolean) {
+  if (element === null) {
+    return 'width, height';
+  } else if (width && height) {
+    return 'width, height, transition';
+  } else if (width) {
+    return 'width, transition';
+  } else if (height) {
+    return 'height, transition';
+  } else {
+    return 'auto';
+  }
+}
+
 function toCssString(value: number | string) {
-  if (typeof value === 'string') return value;
-  else return `${value}px`;
+  if (typeof value === 'number') return `${value}px`;
+  else return value;
 }
