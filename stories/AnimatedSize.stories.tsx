@@ -8,7 +8,7 @@ export default {
 } as ComponentMeta<typeof AnimatedSize>;
 
 function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
-  return ((args) => {
+  return (((args) => {
     const [open0, setOpen0] = React.useState(true);
     const [open1, setOpen1] = React.useState(true);
     return (
@@ -22,18 +22,20 @@ function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
             <div style={{ margin: 64 }}></div>
           </AnimatedSize>
         </AnimatedSize>
-
       </>
     )
-  }) as ComponentStory<typeof AnimatedSize>;
+  }) as ComponentStory<typeof AnimatedSize>).bind({});
 }
 
-export const Demo0 = AnimationBetween({ size: 1.2 }, { size: 0 }).bind({});
-export const Demo1 = AnimationBetween({ size: 'auto' }, { size: 0 }).bind({});
-export const Demo2 = AnimationBetween({ size: undefined }, { size: 0 }).bind({});
-export const Demo3 = AnimationBetween({ size: 1 }, { size: 0 }).bind({});
+export const Demo0 = AnimationBetween({ size: 1.2 }, { size: 0 });
+export const Demo1 = AnimationBetween({ size: 'auto' }, { size: 0 });
+export const Demo2 = AnimationBetween({ size: undefined }, { size: 0 });
+export const Demo3 = AnimationBetween({ size: 1 }, { size: 0 });
 
-export const Demo4 = AnimationBetween({ size: 1.2 }, { size: '20px' }).bind({});
-export const Demo5 = AnimationBetween({ size: 'auto' }, { size: '20px' }).bind({});
-export const Demo6 = AnimationBetween({ size: undefined }, { size: '20px' }).bind({});
-export const Demo7 = AnimationBetween({ size: 1 }, { size: '20px' }).bind({});
+export const Demo4 = AnimationBetween({ size: 1.2 }, { size: '20px' });
+export const Demo5 = AnimationBetween({ size: 'auto' }, { size: '20px' });
+export const Demo6 = AnimationBetween({ size: undefined }, { size: '20px' });
+export const Demo7 = AnimationBetween({ size: 1 }, { size: '20px' });
+
+export const Demo8 = AnimationBetween({ size: undefined }, { size: '2em' });
+export const Demo9 = AnimationBetween({ size: 1 }, { size: '2em' });

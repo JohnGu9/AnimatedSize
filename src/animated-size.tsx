@@ -1,5 +1,5 @@
 import { DataType, Property } from "csstype";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useRefComposer } from "react-ref-composer";
 import { createComponent } from "./create-component";
 import { Factor, SizeFactor, useAnimatedSize } from "./hook";
@@ -43,8 +43,8 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
     ...props
   }, ref) {
     const composeRefs = useRefComposer();
-    const innerRef = React.useRef<HTMLElement>(null);
-    const [element, setElement] = React.useState<HTMLSpanElement | null>(null);
+    const innerRef = useRef<HTMLElement>(null);
+    const [element, setElement] = useState<HTMLSpanElement | null>(null);
     const { width, height, transition, willChange } = useAnimatedSize(
       element, innerRef,
       mergeFactor(widthFactor, duration, delay, curve),

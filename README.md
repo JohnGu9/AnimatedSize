@@ -147,7 +147,7 @@ By default, AnimatedSize use `inline-flex` layout (and `center` inner element) a
 <br/>
 Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` to custom your element position. Or directly set inline style sheet -- `style` parament.
 <br/>
-Because default layout is `inline-flex` that may cause some layout problem. You can change `display` to `flex` or `block` to fix some layout problem. Detail in project [storybook](./stories//InlineDisplayProblem.stories.tsx).
+Because default layout is `inline-flex` that may cause some layout problem. You can change `display` to `flex` or `block` to fix some layout problem. Detail in project [storybook](./stories//DisplayProblem.stories.tsx).
 <br/>
 By the way, by default AnimatedSize set `overflow` as `hidden`. Set style to override it if necessary.
 
@@ -172,7 +172,7 @@ By the way, by default AnimatedSize set `overflow` as `hidden`. Set style to ove
   heightFactor={/* set your factor */}
   style={{
     overflow: 'visible',
-    display:'block',
+    display:'flex', /* use flex as possible as you can, block usually do not work well */
     position:'relative',
     /* Don't override width or height or transition if you want animation to work properly */
     }}>
