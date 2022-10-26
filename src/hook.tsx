@@ -2,7 +2,6 @@ import { DataType } from "csstype";
 import { RefObject, useEffect, useMemo, useState } from "react";
 
 const { now } = Date;
-const { clearTimeout, setTimeout } = window;
 const { max, min } = Math;
 
 export type SizeFactor = number | string | "auto" | undefined;
@@ -31,6 +30,8 @@ export function useAnimatedSize<T extends HTMLElement>(
   const notifyUpdate = () => setTicker(value => !value);
   const state = useMemo(() => {
     return {
+      isWidthAuto,
+      isHeightAuto,
       widthAuto: isWidthAuto,
       heightAuto: isHeightAuto,
       outputStyle: {} as Style,
@@ -43,15 +44,19 @@ export function useAnimatedSize<T extends HTMLElement>(
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  state.isWidthAuto = isWidthAuto;
+  state.isHeightAuto = isHeightAuto;
   state.element = element;
   state.widthFactor = widthFactor;
   state.heightFactor = heightFactor;
   state.outerStyle = outerStyle;
 
-  state.widthAnimation = useAnimatingOnChange(widthFactor,
-    () => { if (isWidthAuto) { state.widthAuto = true; } notifyUpdate(); });
+  state.widthAnimation = useAnimatingOnChange(widthFactor);
+  state.heightAnimation = useAnimatingOnChange(heightFactor);
+
   useEffect(() => {
     if (!isWidthAuto && state.widthAuto !== false) {
+      // 'auto' -> offsetWidth -> width
       state.widthAuto = false;
       const { style } = target.current!;
       const { outputStyle, outerStyle, widthFactor, element } = state;
@@ -62,10 +67,9 @@ export function useAnimatedSize<T extends HTMLElement>(
     }
   }, [isWidthAuto, state, target]);
 
-  state.heightAnimation = useAnimatingOnChange(heightFactor,
-    () => { if (isHeightAuto) { state.heightAuto = true; } notifyUpdate(); });
   useEffect(() => {
     if (!isHeightAuto && state.heightAuto !== false) {
+      // 'auto' -> offsetHeight -> height
       state.heightAuto = false;
       const { style } = target.current!;
       const { outputStyle, outerStyle, heightFactor, element } = state;
@@ -75,6 +79,26 @@ export function useAnimatedSize<T extends HTMLElement>(
       else { style.removeProperty('height'); }
     }
   }, [isHeightAuto, state, target]);
+
+  useEffect(() => {
+    const current = target.current!;
+    const listener = (event: Event) => {
+      const { propertyName } = event as TransitionEvent;
+      switch (propertyName) {
+        case 'height': {
+          if (state.isHeightAuto) state.heightAuto = true;
+          notifyUpdate();
+          break;
+        } case 'width': {
+          if (state.isWidthAuto) state.widthAuto = true;
+          notifyUpdate();
+          break;
+        }
+      }
+    };
+    current.addEventListener('transitionend', listener);
+    return () => current.removeEventListener('transitionend', listener);
+  }, [target, state]);
 
   const { outputStyle,
     widthAnimation: { transition: widthTransition },
@@ -130,7 +154,7 @@ export function useAnimatedSize<T extends HTMLElement>(
       };
       const observer = new ResizeObserver(update);
       observer.observe(element);
-      update(); // not sure whether it's necessary or not
+      update(); // not sure whether this line is necessary or not
       return () => observer.disconnect();
     }
   }, [element, state, target]);
@@ -149,35 +173,23 @@ function isFactorNotEqual(prev: Factor, current: Factor) {
     || prev.delay !== current.delay;
 }
 
-function useAnimatingOnChange(current: Factor, onAnimationEnd: () => unknown) {
+function useAnimatingOnChange(current: Factor) {
   const state = useMemo(() => {
-    return { prev: current, animating: undefined as number | undefined, startTime: undefined as number | undefined, transition: undefined as string | undefined };
+    return { prev: current, startTime: undefined as number | undefined, transition: undefined as string | undefined };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isFactorNotEqual(state.prev, current)) {
-    clearTimeout(state.animating);
     const duration = current.duration + current.delay;
     if (duration === 0) {
       state.startTime = undefined;
       state.transition = undefined;
-      state.animating = undefined;
     } else {
       state.startTime = now();
       state.transition = `${current.duration}ms ${current.curve} ${current.delay}ms`;
-      state.animating = setTimeout(() => {
-        state.startTime = undefined;
-        state.transition = undefined;
-        state.animating = undefined;
-        onAnimationEnd();
-      }, duration);
     }
     state.prev = current;
   }
-
-  useEffect(() => {
-    return () => clearTimeout(state.animating);
-  }, [state]);
 
   return state;
 }
