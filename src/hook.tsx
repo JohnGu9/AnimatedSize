@@ -86,11 +86,17 @@ export function useAnimatedSize<T extends HTMLElement>(
       const { propertyName } = event as TransitionEvent;
       switch (propertyName) {
         case 'height': {
-          if (state.isHeightAuto) state.heightAuto = true;
+          const { isHeightAuto, heightAnimation } = state;
+          if (isHeightAuto) state.heightAuto = true;
+          heightAnimation.startTime = undefined;
+          heightAnimation.transition = undefined;
           notifyUpdate();
           break;
         } case 'width': {
+          const { isWidthAuto, widthAnimation } = state;
           if (state.isWidthAuto) state.widthAuto = true;
+          widthAnimation.startTime = undefined;
+          widthAnimation.transition = undefined;
           notifyUpdate();
           break;
         }
