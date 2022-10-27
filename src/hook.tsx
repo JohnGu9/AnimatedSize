@@ -82,25 +82,26 @@ export function useAnimatedSize<T extends HTMLElement>(
 
   useEffect(() => {
     const current = target.current!;
-    const listener = (event: Event) => {
-      const { propertyName } = event as TransitionEvent;
-      switch (propertyName) {
-        case 'height': {
-          const { isHeightAuto, heightAnimation } = state;
-          if (isHeightAuto) state.heightAuto = true;
-          heightAnimation.startTime = undefined;
-          heightAnimation.transition = undefined;
-          notifyUpdate();
-          break;
-        } case 'width': {
-          const { isWidthAuto, widthAnimation } = state;
-          if (state.isWidthAuto) state.widthAuto = true;
-          widthAnimation.startTime = undefined;
-          widthAnimation.transition = undefined;
-          notifyUpdate();
-          break;
+    const listener = (event: TransitionEvent) => {
+      const { propertyName, target: src } = event;
+      if (src === target.current)
+        switch (propertyName) {
+          case 'height': {
+            const { isHeightAuto, heightAnimation } = state;
+            if (isHeightAuto) state.heightAuto = true;
+            heightAnimation.startTime = undefined;
+            heightAnimation.transition = undefined;
+            notifyUpdate();
+            break;
+          } case 'width': {
+            const { isWidthAuto, widthAnimation } = state;
+            if (isWidthAuto) state.widthAuto = true;
+            widthAnimation.startTime = undefined;
+            widthAnimation.transition = undefined;
+            notifyUpdate();
+            break;
+          }
         }
-      }
     };
     current.addEventListener('transitionend', listener);
     return () => current.removeEventListener('transitionend', listener);
@@ -168,7 +169,7 @@ export function useAnimatedSize<T extends HTMLElement>(
   return outputStyle;
 }
 
-function isFactorAuto(factor: SizeFactor): factor is "auto" | undefined {
+function isFactorAuto(factor: SizeFactor): factor is ("auto" | undefined) {
   return factor === 'auto' || factor === undefined;
 }
 
