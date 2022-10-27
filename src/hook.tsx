@@ -173,11 +173,13 @@ function isFactorAuto(factor: SizeFactor): factor is ("auto" | undefined) {
   return factor === 'auto' || factor === undefined;
 }
 
-function isFactorNotEqual(prev: Factor, current: Factor) {
-  return prev.size !== current.size
-    || prev.duration !== current.duration
-    || prev.curve !== current.curve
-    || prev.delay !== current.delay;
+function isFactorNotEqual(prev: Factor, current: Factor, isAnimating: boolean) {
+  if (isAnimating)
+    return prev.size !== current.size
+      || prev.duration !== current.duration
+      || prev.curve !== current.curve
+      || prev.delay !== current.delay;
+  return prev.size !== current.size;
 }
 
 function useAnimatingOnChange(current: Factor) {
@@ -186,7 +188,7 @@ function useAnimatingOnChange(current: Factor) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isFactorNotEqual(state.prev, current)) {
+  if (isFactorNotEqual(state.prev, current, state.startTime !== undefined)) {
     const duration = current.duration + current.delay;
     if (duration === 0) {
       state.startTime = undefined;
