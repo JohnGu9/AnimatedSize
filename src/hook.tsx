@@ -25,7 +25,7 @@ export function useAnimatedSize<T extends HTMLElement>(
   widthFactor: Factor, heightFactor: Factor,
   outerStyle: Style) {
   const isWidthAuto = isFactorAuto(widthFactor.size);
-  const isHeightAuto = isFactorAuto(heightFactor.size)
+  const isHeightAuto = isFactorAuto(heightFactor.size);
   const [, setTicker] = useState(false);
   const notifyUpdate = () => setTicker(value => !value);
   const state = useMemo(() => {
@@ -44,9 +44,9 @@ export function useAnimatedSize<T extends HTMLElement>(
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  state.element = element;
   state.isWidthAuto = isWidthAuto;
   state.isHeightAuto = isHeightAuto;
-  state.element = element;
   state.widthFactor = widthFactor;
   state.heightFactor = heightFactor;
   state.outerStyle = outerStyle;
@@ -58,33 +58,23 @@ export function useAnimatedSize<T extends HTMLElement>(
     if (!isWidthAuto && state.widthAuto !== false) {
       // 'auto' -> offsetWidth -> width
       state.widthAuto = false;
-      const { style } = target.current!;
-      const { outputStyle, outerStyle, widthFactor, element } = state;
-      const width = outputStyle.width = 'width' in outerStyle ? outerStyle.width
-        : expectLength(widthFactor.size, element?.offsetWidth, false);
-      if (width !== undefined) { style.width = toCssString(width); }
-      else { style.removeProperty('width'); }
+      notifyUpdate();
     }
-  }, [isWidthAuto, state, target]);
+  }, [isWidthAuto, state]);
 
   useEffect(() => {
     if (!isHeightAuto && state.heightAuto !== false) {
       // 'auto' -> offsetHeight -> height
       state.heightAuto = false;
-      const { style } = target.current!;
-      const { outputStyle, outerStyle, heightFactor, element } = state;
-      const height = outputStyle.height = 'height' in outerStyle ? outerStyle.height
-        : expectLength(heightFactor.size, element?.offsetHeight, false);
-      if (height !== undefined) { style.height = toCssString(height); }
-      else { style.removeProperty('height'); }
+      notifyUpdate();
     }
-  }, [isHeightAuto, state, target]);
+  }, [isHeightAuto, state]);
 
   useEffect(() => {
     const current = target.current!;
     const listener = (event: TransitionEvent) => {
       const { propertyName, target: src } = event;
-      if (src === target.current)
+      if (src === current)
         switch (propertyName) {
           case 'height': {
             const { isHeightAuto, heightAnimation } = state;
@@ -164,7 +154,7 @@ export function useAnimatedSize<T extends HTMLElement>(
       update(); // not sure whether this line is necessary or not
       return () => observer.disconnect();
     }
-  }, [element, state, target]);
+  }, [element, target, state]);
 
   return outputStyle;
 }
