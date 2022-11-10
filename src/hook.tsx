@@ -163,13 +163,17 @@ function isFactorAuto(factor: SizeFactor): factor is ("auto" | undefined) {
   return factor === 'auto' || factor === undefined;
 }
 
+function isSizeFactorNotEqual(a: SizeFactor, b: SizeFactor) {
+  return (a === 'auto' ? undefined : a) !== (b === 'auto' ? undefined : b);
+}
+
 function isFactorNotEqual(prev: Factor, current: Factor, isAnimating: boolean) {
   if (isAnimating)
-    return prev.size !== current.size
+    return isSizeFactorNotEqual(prev.size, current.size)
       || prev.duration !== current.duration
       || prev.curve !== current.curve
       || prev.delay !== current.delay;
-  return prev.size !== current.size;
+  return isSizeFactorNotEqual(prev.size, current.size);
 }
 
 function useAnimatingOnChange(current: Factor) {

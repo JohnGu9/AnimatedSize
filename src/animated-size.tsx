@@ -1,7 +1,7 @@
 import { DataType, Property } from "csstype";
-import React, { useRef, useState } from "react";
+import React, { createElement, useRef, useState } from "react";
 import { useRefComposer } from "react-ref-composer";
-import { createComponent } from "./create-component";
+import { createComponent, TagToElementType } from "./create-component";
 import { Factor, SizeFactor, useAnimatedSize } from "./hook";
 
 export { Factor, SizeFactor };
@@ -17,42 +17,50 @@ export type AnimatedSizeProps = {
   crossAxisPosition?: Property.AlignItems,
 };
 
-export const AnimatedSize = createComponent<HTMLSpanElement, AnimatedSizeProps>(
-  function AnimatedSize({ children, ...props }, ref) {
-    return (
-      <AnimatedSizeBuilder {...props} ref={ref}
-        builder={ref => <span ref={ref}>{children}</span>} />);
-  });
+export const AnimatedSize = buildAnimatedSize('span');
+
+export function buildAnimatedSize<T extends keyof JSX.IntrinsicElements, Element = TagToElementType<T>>(tag: T) {
+  const AnimatedSizeBuilder = buildAnimatedSizeBuilder<T, Element>(tag);
+  return createComponent<Element, AnimatedSizeProps>(
+    function AnimatedSize({ children, ...props }, ref) {
+      return (
+        <AnimatedSizeBuilder {...props} ref={ref}
+          builder={ref => createElement(tag, { ref }, children)} />);
+    });
+}
 
 export type AnimatedSizeBuilderProps = AnimatedSizeProps & {
   builder: (ref: React.LegacyRef<HTMLElement>) => React.ReactNode,
 };
 
-export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSizeBuilderProps>(
-  function AnimatedSizeBuilder({
-    widthFactor = {},
-    heightFactor = {},
-    duration = 350,
-    delay = 0,
-    curve = 'ease',
-    axisDirection,
-    mainAxisPosition = 'center',
-    crossAxisPosition = 'center',
-    builder,
-    style,
-    ...props
-  }, ref) {
-    const composeRefs = useRefComposer();
-    const innerRef = useRef<HTMLElement>(null);
-    const [element, setElement] = useState<HTMLSpanElement | null>(null);
-    const { width, height, transition, willChange } = useAnimatedSize(
-      element, innerRef,
-      mergeFactor(widthFactor, duration, delay, curve),
-      mergeFactor(heightFactor, duration, delay, curve),
-      style ?? {});
-    return (
-      <span ref={composeRefs(innerRef, ref)}
-        style={{
+export const AnimatedSizeBuilder = buildAnimatedSizeBuilder('span');
+
+export function buildAnimatedSizeBuilder<T extends keyof JSX.IntrinsicElements, Element = TagToElementType<T>>(tag: T) {
+  return createComponent<Element, AnimatedSizeBuilderProps>(
+    function AnimatedSizeBuilder({
+      widthFactor = {},
+      heightFactor = {},
+      duration = 350,
+      delay = 0,
+      curve = 'ease',
+      axisDirection,
+      mainAxisPosition = 'center',
+      crossAxisPosition = 'center',
+      builder,
+      style,
+      ...props
+    }, ref) {
+      const composeRefs = useRefComposer();
+      const innerRef = useRef<HTMLElement>(null);
+      const [element, setElement] = useState<HTMLSpanElement | null>(null);
+      const { width, height, transition, willChange } = useAnimatedSize(
+        element, innerRef,
+        mergeFactor(widthFactor, duration, delay, curve),
+        mergeFactor(heightFactor, duration, delay, curve),
+        style ?? {});
+      return createElement(tag, {
+        ref: composeRefs(innerRef, ref),
+        style: {
           overflow: 'hidden',
           display: 'inline-flex',
           flexDirection: axisDirection,
@@ -60,13 +68,12 @@ export const AnimatedSizeBuilder = createComponent<HTMLSpanElement, AnimatedSize
           alignItems: crossAxisPosition,
           width, height, transition, willChange,
           ...style,
-        }}
-        {...props}>
-        {builder(setElement)}
-      </span>
-    );
-  }
-);
+        },
+        ...props,
+      }, builder(setElement));
+    }
+  );
+}
 
 function mergeFactor(factor: Partial<Factor>, duration: number, delay: number, curve: DataType.EasingFunction): Factor {
   return {
