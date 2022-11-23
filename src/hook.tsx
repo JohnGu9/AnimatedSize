@@ -112,16 +112,17 @@ export function useAnimatedSize<T extends HTMLElement>(
   useEffect(() => {
     if (element) {
       const current = target.current!;
-      const update = () => {
+      const update = (_: ResizeObserverEntry[]) => {
         const { style } = current;
         const { outputStyle, outerStyle,
           widthFactor, heightFactor,
           widthAuto, heightAuto,
           widthAnimation, heightAnimation } = state;
+        const { offsetWidth, offsetHeight } = element;
         let requestUpdateTransition = false;
 
         const width = 'width' in outerStyle ? outerStyle.width
-          : expectLength(widthFactor.size, element.offsetWidth, widthAuto);
+          : expectLength(widthFactor.size, offsetWidth, widthAuto);
         if (outputStyle.width !== width) {
           outputStyle.width = width;
           if (width !== undefined) { style.width = toCssString(width); }
@@ -132,7 +133,7 @@ export function useAnimatedSize<T extends HTMLElement>(
         }
 
         const height = 'height' in outerStyle ? outerStyle.height
-          : expectLength(heightFactor.size, element.offsetHeight, heightAuto);
+          : expectLength(heightFactor.size, offsetHeight, heightAuto);
         if (outputStyle.height !== height) {
           outputStyle.height = height;
           if (height !== undefined) { style.height = toCssString(height); }
@@ -151,7 +152,6 @@ export function useAnimatedSize<T extends HTMLElement>(
       };
       const observer = new ResizeObserver(update);
       observer.observe(element);
-      update(); // not sure whether this line is necessary or not
       return () => observer.disconnect();
     }
   }, [element, target, state]);
