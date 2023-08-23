@@ -62,7 +62,7 @@ export function buildAnimatedSizeBuilder<T extends keyof JSX.IntrinsicElements, 
         ref: composeRefs(innerRef, ref),
         style: {
           overflow: 'hidden',
-          display: 'inline-flex',
+          display: 'flex',
           flexDirection: axisDirection,
           justifyContent: mainAxisPosition,
           alignItems: crossAxisPosition,

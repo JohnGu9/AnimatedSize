@@ -1,6 +1,6 @@
 {
   "name": "animated-size",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "This component provide flexible size-change animation for html element under react framework. ",
   "private": false,
   "main": "dist/index.js",
