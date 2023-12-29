@@ -89,15 +89,15 @@ Factor change behaviors:
 
 | From           | To             | Description                                                                                                           |
 | -------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
-| number[2]      | auto           | animate from 300px to 150px, than set the width property as 'auto'                                                    |
-| number[2]      | undefined      | animate from 300px to 150px, than set the width property as undefined (remove width property from inline style sheet) |
-| string['50px'] | auto           | animate from 50px to 150px, than set the width property as 'auto'                                                     |
-| string['50px'] | undefined      | animate from 50px to 150px, than set the width property as undefined (remove width property from inline style sheet)  |
+| number[2]      | auto           | animate from 300px to 150px, then set the width property as 'auto'                                                    |
+| number[2]      | undefined      | animate from 300px to 150px, then set the width property as undefined (remove width property from inline style sheet) |
+| string['50px'] | auto           | animate from 50px to 150px, then set the width property as 'auto'                                                     |
+| string['50px'] | undefined      | animate from 50px to 150px, then set the width property as undefined (remove width property from inline style sheet)  |
 |                |                |                                                                                                                       |
-| auto           | number[2]      | set the width property as 150px, than animate from 150px to 300px                                                     |
-| undefined      | number[2]      | set the width property as 150px, than animate from 150px to 300px                                                     |
-| auto           | string['50px'] | set the width property as 150px, than animate from 150px to 50px                                                      |
-| undefined      | string['50px'] | set the width property as 150px, than animate from 150px to 50px                                                      |
+| auto           | number[2]      | set the width property as 150px, then animate from 150px to 300px                                                     |
+| undefined      | number[2]      | set the width property as 150px, then animate from 150px to 300px                                                     |
+| auto           | string['50px'] | set the width property as 150px, then animate from 150px to 50px                                                      |
+| undefined      | string['50px'] | set the width property as 150px, then animate from 150px to 50px                                                      |
 |                |                |                                                                                                                       |
 | number[2]      | string['50px'] | animate from 300px to 50px                                                                                            |
 | string['50px'] | number[2]      | animate from 50px to 300px                                                                                            |
