@@ -1,8 +1,9 @@
 {
   "name": "animated-size",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "This component provide flexible size-change animation for html element under react framework. ",
   "private": false,
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "repository": {
@@ -13,12 +14,6 @@
     "dist",
     "README.md"
   ],
-  "scripts": {
-    "clean": "node ./script/clean.js",
-    "build": "npm run clean && tsc",
-    "storybook": "start-storybook -p 3003",
-    "build-storybook": "build-storybook"
-  },
   "keywords": [
     "react",
     "dom",
@@ -27,26 +22,47 @@
   ],
   "author": "johngu",
   "license": "MIT",
+  "scripts": {
+    "clean": "node ./script/clean.js",
+    "build": "npm run clean && tsc",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
   "devDependencies": {
-    "@babel/core": "^7.19.3",
-    "@storybook/addon-actions": "^6.5.12",
-    "@storybook/addon-essentials": "^6.5.12",
-    "@storybook/addon-interactions": "^6.5.12",
-    "@storybook/addon-links": "^6.5.12",
-    "@storybook/builder-webpack4": "^6.5.12",
-    "@storybook/manager-webpack4": "^6.5.12",
-    "@storybook/react": "^6.5.12",
-    "@storybook/testing-library": "^0.0.13",
-    "@types/react": "^18.0.21",
-    "babel-loader": "^8.2.5",
+    "@chromatic-com/storybook": "^3.2.5",
+    "@eslint/js": "^9.19.0",
+    "@storybook/addon-essentials": "^8.6.4",
+    "@storybook/addon-interactions": "^8.6.4",
+    "@storybook/addon-onboarding": "^8.6.4",
+    "@storybook/blocks": "^8.6.4",
+    "@storybook/react": "^8.6.4",
+    "@storybook/react-vite": "^8.6.4",
+    "@storybook/test": "^8.6.4",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "eslint-plugin-storybook": "^0.11.4",
+    "globals": "^15.14.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-ref-composer": "^1.0.1",
-    "typescript": "^4.8.4"
+    "storybook": "^8.6.4",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.22.0",
+    "vite": "^6.1.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-dom": "*",
     "react-ref-composer": "*"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended",
+      "plugin:storybook/recommended"
+    ]
   }
 }

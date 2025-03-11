@@ -1,11 +1,11 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { Property } from "csstype";
 import React from 'react';
-import { AnimatedSize } from '../src/animated-size';
+import { AnimatedSize } from '../animated-size';
 
 export default {
   component: AnimatedSize,
-} as ComponentMeta<typeof AnimatedSize>;
+} as Meta<typeof AnimatedSize>;
 
 function AnimationBetween(display: Property.Display) {
   const start = { size: 'auto' };
@@ -29,8 +29,8 @@ function AnimationBetween(display: Property.Display) {
         </AnimatedSize>
 
       </div>
-    )
-  }) as ComponentStory<typeof AnimatedSize>).bind({});
+    );
+  }) as StoryFn<typeof AnimatedSize>).bind({});
 }
 
 export const InlineFlex = AnimationBetween('inline-flex');

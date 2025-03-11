@@ -4,7 +4,7 @@ import { useRefComposer } from "react-ref-composer";
 import { createComponent, TagToElementType } from "./create-component";
 import { Factor, SizeFactor, useAnimatedSize } from "./hook";
 
-export { Factor, SizeFactor };
+export { type Factor, type SizeFactor };
 
 export type AnimatedSizeProps = {
   widthFactor?: Partial<Factor>,

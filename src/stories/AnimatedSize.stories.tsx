@@ -1,11 +1,11 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
-import { AnimatedSize } from '../src/animated-size';
-import { Factor } from '../src/hook';
+import { AnimatedSize } from '../animated-size';
+import { Factor } from '../hook';
 
 export default {
   component: AnimatedSize,
-} as ComponentMeta<typeof AnimatedSize>;
+} as Meta<typeof AnimatedSize>;
 
 function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
   return (((args) => {
@@ -24,7 +24,7 @@ function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
         </AnimatedSize>
       </>
     )
-  }) as ComponentStory<typeof AnimatedSize>).bind({});
+  }) as StoryFn<typeof AnimatedSize>).bind({});
 }
 
 export const Demo0 = AnimationBetween({ size: 1.2 }, { size: 0 });

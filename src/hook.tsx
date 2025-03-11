@@ -11,9 +11,9 @@ export type Factor = {
   duration: number,               /* unit: ms, default: 350 */
   delay: number,                  /* unit: ms, default: 0 */
   curve: DataType.EasingFunction, /* default: ease */
-}
+};
 
-type Style = {
+export type Style = {
   width?: number | string,
   height?: number | string,
   transition?: string,
