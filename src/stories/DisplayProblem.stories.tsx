@@ -10,7 +10,7 @@ export default {
 function AnimationBetween(display: Property.Display) {
   const start = { size: 'auto' };
   const end = { size: 0 };
-  return (((args) => {
+  const Template: StoryFn<typeof AnimatedSize> = (args) => {
     const [open0, setOpen0] = React.useState(true);
     const [open1, setOpen1] = React.useState(true);
     return (
@@ -30,7 +30,8 @@ function AnimationBetween(display: Property.Display) {
 
       </div>
     );
-  }) as StoryFn<typeof AnimatedSize>).bind({});
+  };
+  return Template.bind({});
 }
 
 export const InlineFlex = AnimationBetween('inline-flex');

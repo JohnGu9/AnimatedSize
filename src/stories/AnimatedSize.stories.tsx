@@ -8,7 +8,7 @@ export default {
 } as Meta<typeof AnimatedSize>;
 
 function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
-  return (((args) => {
+  const Template: StoryFn<typeof AnimatedSize> = (args) => {
     const [open0, setOpen0] = React.useState(true);
     const [open1, setOpen1] = React.useState(true);
     return (
@@ -23,8 +23,9 @@ function AnimationBetween(start: Partial<Factor>, end: Partial<Factor>) {
           </AnimatedSize>
         </AnimatedSize>
       </>
-    )
-  }) as StoryFn<typeof AnimatedSize>).bind({});
+    );
+  };
+  return Template.bind({});
 }
 
 export const Demo0 = AnimationBetween({ size: 1.2 }, { size: 0 });

@@ -112,7 +112,7 @@ export function useAnimatedSize<T extends HTMLElement>(
   useEffect(() => {
     if (element) {
       const current = target.current!;
-      const update = (_: ResizeObserverEntry[]) => {
+      const update = () => {
         const { style } = current;
         const { outputStyle, outerStyle,
           widthFactor, heightFactor,
