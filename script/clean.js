@@ -1,19 +1,19 @@
-const fs = require('fs');
-const { join } = require('path');
+import { existsSync, lstatSync, readdirSync, unlinkSync, rmdirSync } from 'fs';
+import { join } from 'path';
 
 function deleteFolderRecursive(path) {
-  if (fs.existsSync(path) && fs.lstatSync(path).isDirectory()) {
-    fs.readdirSync(path).forEach(function (file) {
+  if (existsSync(path) && lstatSync(path).isDirectory()) {
+    readdirSync(path).forEach(function (file) {
       const curPath = join(path, file);
 
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      if (lstatSync(curPath).isDirectory()) { // recurse
         deleteFolderRecursive(curPath);
       } else { // delete file
-        fs.unlinkSync(curPath);
+        unlinkSync(curPath);
       }
     });
 
-    fs.rmdirSync(path);
+    rmdirSync(path);
   }
 };
 

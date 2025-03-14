@@ -1,6 +1,6 @@
 {
   "name": "animated-size",
-  "version": "2.1.5",
+  "version": "3.0.0",
   "description": "This component provide flexible size-change animation for html element under react framework. ",
   "private": false,
   "type": "module",
@@ -24,7 +24,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "node ./script/clean.js",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
