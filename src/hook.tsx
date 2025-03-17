@@ -7,7 +7,7 @@ const { max, min } = Math;
 export type SizeFactor = number | string | "auto" | undefined;
 
 export type Factor = {
-  size?: SizeFactor,              /* default: undefined */
+  size: SizeFactor,               /* default: undefined */
   duration: number,               /* unit: ms, default: 350 */
   delay: number,                  /* unit: ms, default: 0 */
   curve: DataType.EasingFunction, /* default: ease */

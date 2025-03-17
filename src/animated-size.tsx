@@ -12,9 +12,9 @@ export type AnimatedSizeProps = {
   duration?: number,               /* unit: ms, default: 350 */
   delay?: number,                  /* unit: ms, default: 0 */
   curve?: DataType.EasingFunction, /* default: ease */
-  axisDirection?: Property.FlexDirection,
-  mainAxisPosition?: Property.JustifyContent,
-  crossAxisPosition?: Property.AlignItems,
+  axisDirection?: Property.FlexDirection,     /* only work in flex */
+  mainAxisPosition?: Property.JustifyContent, /* only work in flex */
+  crossAxisPosition?: Property.AlignItems,    /* only work in flex */
 };
 
 export const AnimatedSize = buildAnimatedSize('span');
@@ -23,9 +23,12 @@ export function buildAnimatedSize<T extends keyof JSX.IntrinsicElements, Element
   const AnimatedSizeBuilder = buildAnimatedSizeBuilder<T, Element>(tag);
   return createComponent<Element, AnimatedSizeProps>(
     function AnimatedSize({ children, ...props }, ref) {
-      return (
-        <AnimatedSizeBuilder {...props} ref={ref}
-          builder={ref => createElement(tag, { ref }, children)} />);
+      return (<AnimatedSizeBuilder {...props} ref={ref}
+        builder={ref =>
+          createElement(
+            tag,
+            { ref, style: { display: "inline-block" } },
+            children)} />);
     });
 }
 

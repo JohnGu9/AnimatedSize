@@ -121,7 +121,9 @@ Setup factor other properties to custom your animation `curve` as well as `durat
     delay: 200 /* unit: ms */,
   }}
 >
-  {/* your element*/}
+  <div>{/* your components */}</div>
+  <div>{/* your components */}</div>
+  {/* your other components */}
 </AnimatedSize>
 ```
 
@@ -132,8 +134,8 @@ Setup factor other properties to custom your animation `curve` as well as `durat
   widthFactor={/* set your factor */}
   heightFactor={/* set your factor */}
   builder={(ref) => (
-    <div ref={ref}>{/* pass ref to dom element that let AnimatedSize access the element object */}
-    {/* set your element that wrapper by div */}
+    <div ref={ref}>{/* pass ref to dom element that let AnimatedSize access the element object. Should be the only one dom child of AnimatedSizeBuilder. */}
+    {/* set your components that wrapper by div */}
     </div>
   )}
 />
@@ -143,11 +145,11 @@ Setup factor other properties to custom your animation `curve` as well as `durat
 
 ## Inner element position
 
-By default, AnimatedSize use `inline-flex` layout (and `center` inner element) and the inner element follow the flex layout.
+By default, AnimatedSize use `flex` layout (and `center` inner element) and the inner element follow the flex layout.
 <br/>
 Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` to custom your element position. Or directly set inline style sheet -- `style` parament.
 <br/>
-Because default layout is `inline-flex` that may cause some layout problem. You can change `display` to `flex` to fix some layout problem. Detail in project [storybook](./stories//DisplayProblem.stories.tsx).
+Be careful when you use `AnimatedSizeBuilder`. `AnimatedSize` require its direct child has its own `Block formatting context`(`BFC`). The children of `flex` will create their own `BFC` automatically. It is the reason why `AnimatedSize` default `display` is `flex`. Reference [Block formatting context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context).
 <br/>
 By the way, by default AnimatedSize set `overflow` as `hidden`. Set style to override it if necessary.
 

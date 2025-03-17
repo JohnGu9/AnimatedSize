@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { Property } from "csstype";
 import React from 'react';
-import { AnimatedSize } from '../animated-size';
+import { AnimatedSize, AnimatedSizeBuilder } from '../animated-size';
 
 export default {
   component: AnimatedSize,
@@ -15,26 +15,34 @@ function AnimationBetween(display: Property.Display) {
     const [open1, setOpen1] = React.useState(true);
     return (
       <div style={{ position: 'relative' }}>
-        <h4 style={{ display: 'block' }}>Inline and block display may not work as expected if nested element contains text</h4>
-        <h4 style={{ display: 'block' }}>Flex display can fix it</h4>
+        <h4 style={{ display: 'block' }}>AnimatedSize's direct child should have its own "Block formatting context". </h4>
+        <h4 style={{ display: 'block' }}>If not, it will cause layout issue and AnimatedSize would not work as expected. </h4>
+        <h4 style={{ display: 'block' }}>Known: "inline-block" will create its own "Block formatting context" but "inline" is not. </h4>
+        <h4 style={{ display: 'block' }}>For more detail: <a>https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context</a>
+        </h4>
         <button style={{ marginBottom: 8, display: 'block', zIndex: 8 }} onClick={() => setOpen0(!open0)}>{open0 ? 'close' : 'open'} outer</button>
         <button style={{ marginBottom: 8, display: 'block', zIndex: 8 }} onClick={() => setOpen1(!open1)}>{open1 ? 'close' : 'open'} inner</button>
-        <AnimatedSize style={{ display, border: 'dotted', overflow: 'visible', pointerEvents: 'none' }}
-          heightFactor={open0 ? start : end} {...args}>
-          <div style={{ margin: 32, color: open0 ? 'black' : 'grey' }}>text</div>
-          <AnimatedSize style={{ display, border: 'dotted', margin: 32, overflow: 'visible', pointerEvents: 'none' }}
-            heightFactor={open1 ? start : end} {...args}>
-            <div style={{ margin: 32, color: open1 ? 'black' : 'grey' }}>text</div>
-          </AnimatedSize>
-        </AnimatedSize>
-
+        <AnimatedSizeBuilder style={{ border: 'dotted', overflow: 'visible', display: "inline-block"/* override default flex display, prevent child from creating BFC automatically. */ }}
+          heightFactor={open0 ? start : end} {...args}
+          builder={ref => {
+            return <span ref={ref as unknown as React.LegacyRef<HTMLDivElement>} style={{ display }}>
+              <div style={{ margin: 32, color: open0 ? 'black' : 'grey' }}>Direct child's display is "{display}"!</div>
+              <AnimatedSizeBuilder style={{ border: 'dotted', margin: 32, overflow: 'visible', display: "inline-block"/* override default flex display, prevent child from creating BFC automatically. */ }}
+                heightFactor={open1 ? start : end} {...args}
+                builder={ref => {
+                  return <span ref={ref as unknown as React.LegacyRef<HTMLDivElement>} style={{ display }}>
+                    <div style={{ margin: 32, color: open1 ? 'black' : 'grey' }}>text</div>
+                  </span>;
+                }}>
+              </AnimatedSizeBuilder>
+            </span>;
+          }}>
+        </AnimatedSizeBuilder>
       </div>
     );
   };
   return Template.bind({});
 }
 
-export const InlineFlex = AnimationBetween('inline-flex');
-export const Flex = AnimationBetween('flex');
 export const InlineBlock = AnimationBetween('inline-block');
-export const Block = AnimationBetween('block');
+export const Inline = AnimationBetween('inline');
