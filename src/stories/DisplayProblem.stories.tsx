@@ -15,11 +15,10 @@ function AnimationBetween(display: Property.Display) {
     const [open1, setOpen1] = React.useState(true);
     return (
       <div style={{ position: 'relative' }}>
-        <h4 style={{ display: 'block' }}>AnimatedSize's direct child should have its own "Block formatting context". </h4>
+        <h4 style={{ display: 'block' }}>AnimatedSizeBuilder's direct child should have its own "Block formatting context". </h4>
         <h4 style={{ display: 'block' }}>If not, it will cause layout issue and AnimatedSize would not work as expected. </h4>
         <h4 style={{ display: 'block' }}>Known: "inline-block" will create its own "Block formatting context" but "inline" is not. </h4>
-        <h4 style={{ display: 'block' }}>For more detail: <a>https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context</a>
-        </h4>
+        <h4 style={{ display: 'block' }}>For more detail: <a>https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context</a></h4>
         <button style={{ marginBottom: 8, display: 'block', zIndex: 8 }} onClick={() => setOpen0(!open0)}>{open0 ? 'close' : 'open'} outer</button>
         <button style={{ marginBottom: 8, display: 'block', zIndex: 8 }} onClick={() => setOpen1(!open1)}>{open1 ? 'close' : 'open'} inner</button>
         <AnimatedSizeBuilder style={{ border: 'dotted', overflow: 'visible', display: "inline-block"/* override default flex display, prevent child from creating BFC automatically. */ }}

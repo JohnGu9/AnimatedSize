@@ -146,12 +146,15 @@ Setup factor other properties to custom your animation `curve` as well as `durat
 ## Inner element position
 
 By default, AnimatedSize use `flex` layout (and `center` inner element) and the inner element follow the flex layout.
-<br/>
+
 Change the parament `axisDirection`, `mainAxisPosition` and `crossAxisPosition` to custom your element position. Or directly set inline style sheet -- `style` parament.
-<br/>
-Be careful when you use `AnimatedSizeBuilder`. `AnimatedSize` require its direct child has its own `Block formatting context`(`BFC`). The children of `flex` will create their own `BFC` automatically. It is the reason why `AnimatedSize` default `display` is `flex`. Reference [Block formatting context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context).
-<br/>
-By the way, by default AnimatedSize set `overflow` as `hidden`. Set style to override it if necessary.
+
+Be careful when you use `AnimatedSizeBuilder`! `AnimatedSizeBuilder` require its direct child has its own `Block formatting context`(`BFC`). The children of `flex` will create their own `BFC` automatically. It is the reason why `AnimatedSizeBuilder` default `display` is `flex`.
+Checkout the [storybook](src/stories/DisplayProblem.stories.tsx) for more detail. Reference [Block formatting context](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_display/Block_formatting_context).
+
+Nothing require to handle if you just use `AnimatedSize`. Because `AnimatedSize` will wrap additional dom on your nested components. The wrapper will create its own `BFC`.
+
+By the way, by default `AnimatedSize` set `overflow` as `hidden`. Set style to override it if necessary.
 
 ```jsx
 <AnimatedSize
@@ -174,9 +177,9 @@ By the way, by default AnimatedSize set `overflow` as `hidden`. Set style to ove
   heightFactor={/* set your factor */}
   style={{
     overflow: 'visible',
-    display:'flex', /* use flex as possible as you can, block usually do not work well */
+    display:'flex',
     position:'relative',
-    /* Don't override width or height or transition if you want animation to work properly */
+    /* If you just want animation on height, don't override height prop in the style but it is ok to override width. The same goes for the other way around. */
     }}>
   {/* your element */}
 </AnimatedSize>
