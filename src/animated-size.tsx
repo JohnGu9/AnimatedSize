@@ -12,7 +12,7 @@ export type AnimatedSizeProps = {
   axisDirection?: Property.FlexDirection,     /* only work in flex */
   mainAxisPosition?: Property.JustifyContent, /* only work in flex */
   crossAxisPosition?: Property.AlignItems,    /* only work in flex */
-} & AnimationProps;
+} & Partial<AnimationProps>;
 
 export const AnimatedSize = buildAnimatedSize('div');
 
@@ -30,7 +30,7 @@ export function buildAnimatedSize<T extends keyof JSX.IntrinsicElements, Element
 }
 
 export type AnimatedSizeBuilderProps = AnimatedSizeProps & {
-  builder: (ref: (element: HTMLElement) => unknown) => ReactNode,
+  builder: (ref: React.Ref<HTMLElement>) => ReactNode,
 };
 
 export const AnimatedSizeBuilder = buildAnimatedSizeBuilder('div');
