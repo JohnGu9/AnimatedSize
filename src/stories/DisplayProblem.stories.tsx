@@ -1,16 +1,16 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { Property } from "csstype";
 import React from 'react';
-import { AnimatedSize, AnimatedSizeBuilder } from '../animated-size';
+import { AnimatedSizeBuilder } from '../animated-size';
 
 export default {
-  component: AnimatedSize,
-} as Meta<typeof AnimatedSize>;
+  component: AnimatedSizeBuilder,
+} as Meta<typeof AnimatedSizeBuilder>;
 
 function AnimationBetween(display: Property.Display) {
   const start = { size: 'auto' };
   const end = { size: 0 };
-  const Template: StoryFn<typeof AnimatedSize> = (args) => {
+  const Template: StoryFn<typeof AnimatedSizeBuilder> = (args) => {
     const [open0, setOpen0] = React.useState(true);
     const [open1, setOpen1] = React.useState(true);
     return (

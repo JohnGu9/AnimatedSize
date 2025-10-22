@@ -1,42 +1,39 @@
 import { DataType, Property } from "csstype";
-import React, { createElement, useRef, useState } from "react";
+import { createElement, CSSProperties, ReactNode, useRef, useState } from "react";
 import { useRefComposer } from "react-ref-composer";
 import { createComponent, TagToElementType } from "./create-component";
-import { Factor, SizeFactor, useAnimatedSize } from "./hook";
+import { AnimationProps, Factor, SizeFactor, useAnimatedSize } from "./hook";
 
 export { type Factor, type SizeFactor };
 
 export type AnimatedSizeProps = {
   widthFactor?: Partial<Factor>,
   heightFactor?: Partial<Factor>,
-  duration?: number,               /* unit: ms, default: 350 */
-  delay?: number,                  /* unit: ms, default: 0 */
-  curve?: DataType.EasingFunction, /* default: ease */
   axisDirection?: Property.FlexDirection,     /* only work in flex */
   mainAxisPosition?: Property.JustifyContent, /* only work in flex */
   crossAxisPosition?: Property.AlignItems,    /* only work in flex */
-};
+} & AnimationProps;
 
-export const AnimatedSize = buildAnimatedSize('span');
+export const AnimatedSize = buildAnimatedSize('div');
 
 export function buildAnimatedSize<T extends keyof JSX.IntrinsicElements, Element = TagToElementType<T>>(tag: T) {
   const AnimatedSizeBuilder = buildAnimatedSizeBuilder<T, Element>(tag);
-  return createComponent<Element, AnimatedSizeProps>(
-    function AnimatedSize({ children, ...props }, ref) {
+  return createComponent<Element, AnimatedSizeProps & { internalStyle: CSSProperties; }>(
+    function AnimatedSize({ children, internalStyle, ...props }, ref) {
       return (<AnimatedSizeBuilder {...props} ref={ref}
         builder={ref =>
           createElement(
             tag,
-            { ref, style: { display: "inline-block" } },
+            { ref, style: internalStyle },
             children)} />);
     });
 }
 
 export type AnimatedSizeBuilderProps = AnimatedSizeProps & {
-  builder: (ref: React.LegacyRef<HTMLElement>) => React.ReactNode,
+  builder: (ref: (element: HTMLElement) => unknown) => ReactNode,
 };
 
-export const AnimatedSizeBuilder = buildAnimatedSizeBuilder('span');
+export const AnimatedSizeBuilder = buildAnimatedSizeBuilder('div');
 
 export function buildAnimatedSizeBuilder<T extends keyof JSX.IntrinsicElements, Element = TagToElementType<T>>(tag: T) {
   return createComponent<Element, AnimatedSizeBuilderProps>(
@@ -64,8 +61,8 @@ export function buildAnimatedSizeBuilder<T extends keyof JSX.IntrinsicElements, 
       return createElement(tag, {
         ref: composeRefs(innerRef, ref),
         style: {
-          overflow: 'hidden',
           display: 'flex',
+          overflow: 'hidden',
           flexDirection: axisDirection,
           justifyContent: mainAxisPosition,
           alignItems: crossAxisPosition,

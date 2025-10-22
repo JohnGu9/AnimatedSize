@@ -6,12 +6,15 @@ const { max, min } = Math;
 
 export type SizeFactor = number | string | "auto" | undefined;
 
-export type Factor = {
-  size: SizeFactor,               /* default: undefined */
+export type AnimationProps = {
   duration: number,               /* unit: ms, default: 350 */
   delay: number,                  /* unit: ms, default: 0 */
   curve: DataType.EasingFunction, /* default: ease */
 };
+
+export type Factor = {
+  size: SizeFactor,               /* default: undefined */
+} & AnimationProps;
 
 export type Style = {
   width?: number | string,
@@ -229,7 +232,7 @@ function toTransitionString(width?: string, height?: string) {
   } else if (width === undefined) {
     return `height ${height}`;
   } else if (height === undefined) {
-    return `width ${width}`
+    return `width ${width}`;
   } else {
     return `width ${width}, height ${height}`;
   }
